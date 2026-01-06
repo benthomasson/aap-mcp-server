@@ -44,7 +44,7 @@ describe("mcpGetHandler", () => {
 
   describe("GET method validation", () => {
     it("should return 405 when GET request is made to /mcp endpoint", async () => {
-      mockReq.path = "/mcp";
+      (mockReq as any).path = "/mcp";
       mockReq.headers = {
         "mcp-session-id": "session-123",
       };
@@ -68,7 +68,7 @@ describe("mcpGetHandler", () => {
     });
 
     it("should allow GET request on SSE streaming paths", async () => {
-      mockReq.path = "/mcp/sse/stream-123";
+      (mockReq as any).path = "/mcp/sse/stream-123";
       mockReq.headers = {
         "mcp-session-id": "session-123",
       };
@@ -82,7 +82,7 @@ describe("mcpGetHandler", () => {
     });
 
     it("should allow GET request on toolset-specific paths", async () => {
-      mockReq.path = "/mcp/my-toolset";
+      (mockReq as any).path = "/mcp/my-toolset";
       mockReq.headers = {
         "mcp-session-id": "session-123",
       };
@@ -96,7 +96,7 @@ describe("mcpGetHandler", () => {
     });
 
     it("should allow GET request on nested paths", async () => {
-      mockReq.path = "/mcp/foo/bar/baz";
+      (mockReq as any).path = "/mcp/foo/bar/baz";
       mockReq.headers = {
         "mcp-session-id": "session-123",
       };
@@ -111,7 +111,7 @@ describe("mcpGetHandler", () => {
 
   describe("basename edge cases", () => {
     it("should handle paths ending with /mcp", async () => {
-      mockReq.path = "/api/v1/mcp";
+      (mockReq as any).path = "/api/v1/mcp";
 
       const { basename } = await import("path");
       const shouldBlock = basename(mockReq.path!) === "mcp";
@@ -120,7 +120,7 @@ describe("mcpGetHandler", () => {
     });
 
     it("should handle paths with mcp in the middle", async () => {
-      mockReq.path = "/mcp/endpoint/data";
+      (mockReq as any).path = "/mcp/endpoint/data";
 
       const { basename } = await import("path");
       const shouldBlock = basename(mockReq.path!) === "mcp";
@@ -129,7 +129,7 @@ describe("mcpGetHandler", () => {
     });
 
     it("should handle root path", async () => {
-      mockReq.path = "/";
+      (mockReq as any).path = "/";
 
       const { basename } = await import("path");
       const shouldBlock = basename(mockReq.path!) === "mcp";
@@ -138,7 +138,7 @@ describe("mcpGetHandler", () => {
     });
 
     it("should handle empty path", async () => {
-      mockReq.path = "";
+      (mockReq as any).path = "";
 
       const { basename } = await import("path");
       const shouldBlock = basename(mockReq.path!) === "mcp";
@@ -149,7 +149,7 @@ describe("mcpGetHandler", () => {
 
   describe("session validation after GET method check", () => {
     it("should still validate session if GET is allowed on non-/mcp paths", async () => {
-      mockReq.path = "/mcp/sse/stream-123";
+      (mockReq as any).path = "/mcp/sse/stream-123";
       mockReq.headers = {};
 
       const { basename } = await import("path");
