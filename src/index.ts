@@ -14,7 +14,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { extractToolsFromApi } from "./extract-tools.js";
 import { readFileSync, writeFileSync } from "fs";
-import { join } from "path";
+import { basename, join } from "path";
 import * as yaml from "js-yaml";
 import { metricsService } from "./metrics.js";
 import {
@@ -581,6 +581,11 @@ const mcpPostHandler = async (
 // MCP GET endpoint for streaming data
 const mcpGetHandler = async (req: express.Request, res: express.Response) => {
   const sessionId = req.headers["mcp-session-id"] as string;
+
+  if (basename(req.path) === "mcp") {
+    res.status(405).send("GET method not allowed on /mcp endpoint");
+    return;
+  }
 
   if (!sessionId || !sessionManager.has(sessionId)) {
     res.status(404).send("Session not found");
